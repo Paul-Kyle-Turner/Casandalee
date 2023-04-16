@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- Author : Google, Chatgpt, Paul Turner
+ Email : turner.paul.k@gmail.com -->
+<html>
+  <head>
+    <title>The Rule Lich</title>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-auth-compat.js"></script>
+    <!-- [START gae_python38_auth_include_firebaseui] -->
+    <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
+    />
+    <!-- [END gae_python38_auth_include_firebaseui] -->
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyBl9URYKZ6_ZLHcgJdoeVPn9SNG_MBRHQ4",
+        authDomain: "dnd-lawyer.firebaseapp.com",
+        projectId: "dnd-lawyer",
+        storageBucket: "dnd-lawyer.appspot.com",
+        messagingSenderId: "964197045808",
+        appId: "1:964197045808:web:9377700a8373f0896abff5",
+        measurementId: "G-C4DXXE6X2H",
+      };
+
+      firebase.initializeApp(firebaseConfig);
+
+      if (typeof firebase === "undefined") {
+        const msg =
+          "Please provide your Firebase configuration details. See instructions in templates/index.html.";
+        console.log(msg);
+        alert(msg);
+      }
+    </script>
+    <link rel="stylesheet" href="static/style.css" />
+  </head>
+  <body>
+    <header id="header">
+      <button id="sign-out" hidden="true">Sign Out</button>
+      <h1 id="login-title">The Rule Lich: Pathfinder 2e Rule Lawyer</h1>
+    </header>
+
+    <!-- [START gae_python38_auth_firebase_html] -->
+    <div id="firebaseui-auth-container"></div>
+
+    <div id="login-info" hidden="true">
+      {% if user_data %}
+      <div class="container">
+        <div class="about">
+          <h1>About</h1>
+          <p id="bot-explainer">
+            This is the dnd rules lawyer that I named "The Lich". It's goal is
+            to give you accurate information about TTRPG games. Right now it
+            only has embedded the information for the Pathfinder 2e game. In the
+            future I will have embedded more information from Pathfinder 2e
+            including actions, feats, and beasts. I will also be adding DnD 5e
+            and other TTRPG systems.
+          </p>
+          <h2>Example Message:</h2>
+          <p id="example-user-message">
+            I rolled a nat 20 on a strike. Does this count as a critical strike?
+          </p>
+          <p id="example-lich-message">
+            Lich: Yes! Rolling a natural 20 counts as a critical hit. From Core
+            Rulebook pg...
+          </p>
+          <h2>The Developer</h2>
+          <p id="about-me">
+            Hi, I'm Paul... I am a data scientist, MLOps engineer and dungeon
+            master, not a front-end guy. I run have been DMing for the last five
+            years and at my peak was running five games a week. Even so I still
+            don't have a full grasp on every rule in the books. To solve my lack
+            of infinite memory, I made this bot.
+          </p>
+        </div>
+        <dl>
+          <div class="chatbot-container">
+            <div class="chatbot-body">
+              <div class="chatbot-messages-container">
+                <div class="chatbot-message">Lich : I rise to make a ruling...</div>
+              </div>
+              <form class="chatbot-form">
+                <input
+                  type="text"
+                  class="chatbot-input"
+                  placeholder="Type your message..."
+                />
+                <button type="submit" class="chatbot-submit-btn">Send</button>
+              </form>
+            </div>
+          </div>
+        </dl>
+      </div>
+      {% elif error_message %}
+      <p>Error: {{ error_message }}</p>
+      {% endif %}
+    </div>
+    <!-- [END gae_python38_auth_firebase_html] -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>

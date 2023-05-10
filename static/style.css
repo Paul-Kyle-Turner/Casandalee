@@ -135,7 +135,7 @@ body {
   margin: 0 80px 1rem auto;
 }
 
-.chatbot-message.bot {
+.chatbot-message.lich {
   align-self: flex-start;
   background-color: #3a3434;
   color: #ffffff;

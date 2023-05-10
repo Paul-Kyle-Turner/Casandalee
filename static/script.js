@@ -82,6 +82,7 @@ window.addEventListener("load", function () {
 
 const form = document.querySelector(".chatbot-form");
 const input = document.querySelector(".chatbot-input");
+let index = 0;
 let messages = [];
 
 input.addEventListener("keydown", (event) => {
@@ -110,7 +111,8 @@ form.addEventListener("submit", (event) => {
 });
 
 // Create a message and send it back to the server
-async function postMessageToLLM(message) {
+// Create a message and send it back to the server
+async function postMessageToLLM(message, namespace) {
   try {
     const response = await fetch("/submit", {
       method: "POST",
@@ -121,21 +123,47 @@ async function postMessageToLLM(message) {
         "Content-Type": "application/json",
       },
     });
-    const data = await response.json();
-    console.log("Response:", data["message"]);
-    console.log("debug:", data["debug"]);
-    addMessage(data["message"], "bot");
+    const isJson = response.headers.get('content-type')?.includes('application/json');
+      const reader = response.body
+      .pipeThrough(new TextDecoderStream())
+      .getReader();
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        addMessage(value, "lich");
+        console.log("Received", value);
+      }
+
+      console.log("Response fully received");
   } catch (error) {
+    addMessage(
+      "Something went wrong handeling the request on the front-end.  Try again.",
+      "lich"
+    );
     console.error("Error:", error);
   }
+  index = index + 1;
 }
 
 function addMessage(message, sender) {
   const messagesContainer = document.querySelector(
     ".chatbot-messages-container"
   );
-  const messageDiv = document.createElement("div");
-  messageDiv.classList.add(sender + " : chatbot-message", sender);
-  messageDiv.innerText = message;
-  messagesContainer.appendChild(messageDiv);
+  const messageBox = document.querySelector(
+    ".chatbot-message.lich.id" + String(index)
+  );
+
+  if (messageBox === null || sender === "user") {
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("chatbot-message", sender, "id" + String(index));
+    messageDiv.innerText =
+      String(sender.charAt(0).toUpperCase()) +
+      String(sender.substring(1)) +
+      " : " +
+      message;
+    messagesContainer.appendChild(messageDiv);
+  } else {
+    messageBox.innerText += message;
+  }
 }

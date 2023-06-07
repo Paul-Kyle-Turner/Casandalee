@@ -112,9 +112,9 @@ form.addEventListener("submit", (event) => {
 
 // Create a message and send it back to the server
 // Create a message and send it back to the server
-async function postMessageToLLM(message, namespace) {
+async function postMessageToLLM(message) {
   try {
-    const response = await fetch("/submit", {
+    const response = await fetch("/lich", {
       method: "POST",
       body: JSON.stringify({
         message: message,

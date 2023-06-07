@@ -1,0 +1,63 @@
+keywords:
+  - content:
+      store: pinecone
+      key: metadata/content
+      query_keyword: message # must be an input from some adapter
+  - message:
+      store: json_input
+      key: message
+  - gm_message:
+      store: json_input
+      key: gm_message
+  - categories:
+      store: config
+      key: CATEGORIES
+  - game_name:
+      store: config
+      key: NAME
+endpoints:
+  lich:
+    - categorical_interrogation:
+        id: categorical_interrogation
+        store: config
+        key: CATEGORIES
+        edit_options:
+            store: pinecone
+            attr: namespaces
+        convert: 
+            key: NAMESPACES
+            store: config
+        manual_select:
+            key: MANUAL_RULES
+            store: config
+            search: message
+            break: False
+        prompt:
+          - role: system
+            content: "You are the 'The Rule Lich'. Your job is to make rulings for Table Top Role-Playing Games.  Use the information provided from the books and resources to respond."
+          - role: system
+            content: "The request being made requires documents from these categories {categories}.  Respond with a list of categories where information could be found to help solve the request from only these categories."
+          - role: system
+            content: "Only respond with a list.  Do not use any other language, or anything outside of the categories provided."
+          - role: user
+            content: "{message}"
+    - prompt:
+        id: prompt
+        prompt:
+          - role: system
+            content: "Respond with details about the {game_name}, using : {content}"
+          - role: system
+            content: "Only use the information that is relevant for your answer."
+          - role: user
+            content: "{message}"
+  bard:
+    - prompt:
+        prompt:
+          - role: system
+            content: "You are 'The Background Bard'.  You help Player's to generate character background based on some content made by their game master."
+          - role: system
+            content: "The background scene and setting created by the game master is : {gm_message}"
+          - role: system
+            content: "The background details created by the player are : {message}"
+          - role: user
+            content: "Using the game masters scene and setting and the player created background details, generate a background for a character."

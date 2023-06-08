@@ -26,14 +26,12 @@ def root():
 
 @app.route('/lich', methods=["POST"])
 def lich():
-    json_data = request.get_json()
-
     ai_construct = AIConstruct({})
     config_adapter = ConfigAdapter(GameConfigurations.Pathfinder2e)
-    json_adapter = JsonAdapter(json_data)
+    json_adapter = JsonAdapter(request.get_json())
     pinecone_adapter = PineconeDatabaseAdapter(PineconeConfig,
                                                get_openai_embeddings,
-                                               False)
+                                               global_index=False)
     lang_wizard = LangWizard(ai_construct, {'pinecone': pinecone_adapter,
                                             'config': config_adapter,
                                             'json_input': json_adapter})

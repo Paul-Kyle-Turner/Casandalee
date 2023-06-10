@@ -29,7 +29,7 @@ def about():
 
 @app.route('/lich', methods=["POST"])
 def lich():
-    token = request.cookies['token']
+    token = request.cookies.get('token')
     claims = is_logged_in(token)
     if claims is None:
         def login_generator():

@@ -1,14 +1,8 @@
 <!DOCTYPE html>
-<!-- Author : Google, Chatgpt, Paul Turner
- Email : turner.paul.k@gmail.com -->
-<html>
+<html lang="en">
   <head>
-    <title>The Rule Lich</title>
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.13.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.js"></script>
@@ -17,107 +11,46 @@
       rel="stylesheet"
       href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
     />
-    <!-- [END gae_python38_auth_include_firebaseui] -->
-    <script>
-      const firebaseConfig = {
-        apiKey: "AIzaSyBl9URYKZ6_ZLHcgJdoeVPn9SNG_MBRHQ4",
-        authDomain: "dnd-lawyer.firebaseapp.com",
-        projectId: "dnd-lawyer",
-        storageBucket: "dnd-lawyer.appspot.com",
-        messagingSenderId: "964197045808",
-        appId: "1:964197045808:web:8ab46a733b0f562d6abff5",
-        measurementId: "G-7YGVT0YNBD",
-      };
-      firebase.initializeApp(firebaseConfig);
-
-      if (typeof firebase === "undefined") {
-        const msg =
-          "Please provide your Firebase configuration details. See instructions in templates/index.html.";
-        console.log(msg);
-        alert(msg);
-      }
-    </script>
-    <link rel="stylesheet" href="static/style.css" />
+    <link type="text/css" rel="stylesheet" href="/static/css/chat.css" />
+    <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
+    <title>Casandalee</title>
   </head>
   <body>
-    <header id="header">
-      <button id="sign-out" hidden="true">Sign Out</button>
-      <h1 id="login-title">The Rule Lich: Pathfinder 2e Rule Lawyer</h1>
-    </header>
-
-    <div id="firebaseui-auth-container"></div>
-
-    <div id="login-info" hidden="true"></div>
-    {% if user_data %}
-    <div class="container">
-      <div class="about">
-        <h1>About</h1>
-        <p id="bot-explainer">
-          This is the dnd rules lawyer that I named "The Lich". It's goal is to
-          give you accurate information about TTRPG games. Right now it only has
-          embedded the information for the Pathfinder 2e game. Monsters and
-          NPC's will have to wait for a larger release.
-        </p>
-        <h2>Example Message:</h2>
-        <p id="example-user-message">
-          I rolled a nat 20 on a strike. Does this count as a critical strike?
-        </p>
-        <p id="example-lich-message">
-          Lich: Yes! Rolling a natural 20 counts as a critical hit. From Core
-          Rulebook pg...
-        </p>
-        <h2>The Developer</h2>
-        <p id="about-me">
-          Hi, I'm Paul... I am a data scientist, MLOps engineer and dungeon
-          master, not a front-end guy. I have been DMing for the last five years
-          and at my peak was running five games a week. Even so I still don't
-          have a full grasp on every rule in the books. To solve my lack of
-          infinite memory, I made this bot.
-        </p>
-        <h2>Help the bot</h2>
-        <div id="donate-button-container">
-          <div id="donate-button"></div>
-          <script
-            src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
-            charset="UTF-8"
-          ></script>
-          <script>
-            PayPal.Donation.Button({
-              env: "production",
-              hosted_button_id: "6H5RLTNW2VGRE",
-              image: {
-                src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif",
-                alt: "Donate with PayPal button",
-                title: "PayPal - The safer, easier way to pay online!",
-              },
-            }).render("#donate-button");
-          </script>
+    <div id="main-vertical">
+      <div id="root">
+        <div id="header">
+          <button id="sign-out" hidden="true">Sign Out</button>
+          <h1 id="login-title">Casandalee : Ai for PF2E</h1>
         </div>
-      </div>
-      <dl>
+        <div class="topnav">
+          <a class="active" href="/">Casandalee</a>
+          <a href="about">About</a>
+        </div>
+
         <div class="chatbot-container">
-          <div class="chatbot-body">
-            <div class="chatbot-messages-container">
-              <div class="chatbot-message">
-                Lich : I rise to make a ruling...
-              </div>
+          <div class="chatbot-messages-container">
+            <div class="chatbot-flavor">
+              I am Casandalee. What ruling shall I offer you?
             </div>
-            <form class="chatbot-form">
-              <input
-                type="text"
-                class="chatbot-input"
-                placeholder="Type your message..."
-              />
-              <button type="submit" class="chatbot-submit-btn">Send</button>
-            </form>
+            <div class="chatbot-last-message"></div>
+            <div class="chatbot-response"></div>
+            <div class="chatbot-content-response"></div>
           </div>
         </div>
-      </dl>
-      {% elif error_message %}
-      <p>Error: {{ error_message }}</p>
-      {% endif %}
+        <form class="chatbot-form">
+          <input
+            class="chatbot-input"
+            placeholder="Type your message..."
+          />
+          <button
+            type="submit"
+            class="chatbot-submit-btn"
+          >
+            Send
+          </button>
+        </form>
+      </div>
     </div>
-    <!-- [END gae_python38_auth_firebase_html] -->
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
+  <script src="static/js/lich.js"></script>
 </html>

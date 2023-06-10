@@ -1,0 +1,85 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#header {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: #615e5e;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  color: #eeebeb;
+  width: 100%;
+  z-index: 2;
+}
+
+#sign-out {
+  line-height: 3vh;
+  width: 10vw;
+  font-size: 12pt;
+  font-family: tahoma;
+  margin-top: 1em;
+  margin-right: 1em;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+#firebaseui-auth-container {
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  margin: auto;
+  padding: 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #eeecec;
+  z-index: 1;
+}
+
+#main-vertical {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#root {
+  display: contents;
+}
+
+.topnav {
+  background-color: #4e4b4b;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+  background-color: #615e5e;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #afafaf;
+  color: white;
+}

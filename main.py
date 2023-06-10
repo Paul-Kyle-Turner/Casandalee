@@ -15,17 +15,30 @@ from config import GameConfigurations, PineconeConfig
 
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 
 @app.route('/')
 def root():
-    id_token = request.cookies.get("token")
-    claims = is_logged_in(id_token)
-    return render_template('index.html', user_data=claims)
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
 
 
 @app.route('/lich', methods=["POST"])
 def lich():
+    token = request.cookies['token']
+    claims = is_logged_in(token)
+    if claims is None:
+        def login_generator():
+            yield "Please login.  I have to keep track of my followers."
+        return Response(login_generator(),
+                        mimetype='text/event-stream',
+                        headers={'X-Accel-Buffering': 'no',
+                                 'Access-Control-Allow-Origin': '*'})
+
     ai_construct = AIConstruct({})
     config_adapter = ConfigAdapter(GameConfigurations.Pathfinder2e)
     json_adapter = JsonAdapter(request.get_json())

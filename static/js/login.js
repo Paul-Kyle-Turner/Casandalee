@@ -26,7 +26,10 @@ window.addEventListener("load", function () {
   firebase.auth().onAuthStateChanged(
     function (user) {
       if (user) {
-        document.getElementById("sign-out").hidden = false;
+        document.querySelector("#firebaseui-auth-container").disabled = true;
+        document.querySelector("#firebaseui-auth-container").hidden = true;
+        document.getElementById("#sign-out").hidden = false;
+        document.getElementById("#sign-out").disabled = false;
         console.log(`Signed in as ${user.displayName} (${user.email})`);
         user.getIdToken().then(function (token) {
           document.cookie = "token=" + token;
@@ -34,7 +37,10 @@ window.addEventListener("load", function () {
       } else {
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start("#firebaseui-auth-container", uiConfig);
-        document.getElementById("sign-out").hidden = true;
+        document.getElementById("#sign-out").disabled = true;
+        document.getElementById("#sign-out").hidden = true;
+        document.querySelector("#firebaseui-auth-container").disabled = false;
+        document.querySelector("#firebaseui-auth-container").hidden = false;
         document.cookie = "token=";
       }
     },

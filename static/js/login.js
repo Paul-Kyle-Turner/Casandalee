@@ -1,5 +1,18 @@
 "use strict";
 
+function getCookie(cookieName) {
+  var name = cookieName + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var cookieArray = decodedCookie.split(";");
+  var cookie = cookieArray.find(function (cookie) {
+    return cookie.trim().indexOf(name) === 0;
+  });
+  if (cookie) {
+    return cookie.substring(name.length, cookie.length);
+  }
+  return "";
+}
+
 const firebaseConfig = {
   apiKey: "AIzaSyBl9URYKZ6_ZLHcgJdoeVPn9SNG_MBRHQ4",
   authDomain: "dnd-lawyer.firebaseapp.com",
@@ -14,7 +27,11 @@ firebase.initializeApp(firebaseConfig);
 window.addEventListener("load", function () {
   document.getElementById("sign-out").onclick = function () {
     firebase.auth().signOut();
+    document
+      .querySelector("#firebaseui-auth-container")
+      .removeAttribute("hidden");
   };
+
   var uiConfig = {
     signInSuccessUrl: "/",
     signInOptions: [
@@ -23,24 +40,20 @@ window.addEventListener("load", function () {
     ],
     tosUrl: "<your-tos-url>",
   };
+
   firebase.auth().onAuthStateChanged(
     function (user) {
       if (user) {
-        document.querySelector("#firebaseui-auth-container").disabled = true;
-        document.querySelector("#firebaseui-auth-container").hidden = true;
-        document.getElementById("#sign-out").hidden = false;
-        document.getElementById("#sign-out").disabled = false;
+        document.getElementById("sign-out").hidden = false;
         console.log(`Signed in as ${user.displayName} (${user.email})`);
         user.getIdToken().then(function (token) {
           document.cookie = "token=" + token;
+          document.getElementById("firebaseui-auth-container").hidden = true;
         });
       } else {
         var ui = new firebaseui.auth.AuthUI(firebase.auth());
         ui.start("#firebaseui-auth-container", uiConfig);
-        document.getElementById("#sign-out").disabled = true;
-        document.getElementById("#sign-out").hidden = true;
-        document.querySelector("#firebaseui-auth-container").disabled = false;
-        document.querySelector("#firebaseui-auth-container").hidden = false;
+        document.getElementById("sign-out").hidden = true;
         document.cookie = "token=";
       }
     },

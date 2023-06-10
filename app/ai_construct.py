@@ -8,7 +8,7 @@ class AIConstruct:
     def __init__(self,
                  ai_adapters:Dict,
                  stream:bool=True):
-        if ai_adapters is None:
+        if not ai_adapters:
             ai_adapters = {"openai": OpenAIAdapter(OpenAIConfig)}
         self.ai_adapters = ai_adapters
         self.stream = stream

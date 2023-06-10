@@ -15,8 +15,7 @@ class LangWizard:
                  database_adapters: Dict,
                  endpoints_file_path: str = 'endpoints.yaml'):
         configuration_yaml = load_yaml(endpoints_file_path)
-        keyword_spy = KeywordSpy(
-            configuration_yaml['keywords'], database_adapters)
+        keyword_spy = KeywordSpy(configuration_yaml['keywords'])
 
         self.langwizard_config = LangWizardConfig(ai_construct,
                                                   database_adapters,

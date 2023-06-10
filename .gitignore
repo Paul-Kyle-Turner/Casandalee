@@ -1,0 +1,14 @@
+__pycache__/
+.idea/
+.ipynb_checkpoints/
+botch/
+node_modules/
+notebooks/
+venv/
+.env
+env_variables.yaml
+.env.yaml
+package-lock.json
+app.yaml
+.vscode/
+req.txt

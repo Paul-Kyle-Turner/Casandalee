@@ -22,16 +22,16 @@ endpoints:
         store: config
         key: CATEGORIES
         edit_options:
-            store: pinecone
-            attr: namespaces
-        convert: 
-            key: NAMESPACES
-            store: config
+          store: pinecone
+          attr: namespaces
+        convert:
+          key: NAMESPACES
+          store: config
         manual_select:
-            key: MANUAL_RULES
-            store: config
-            search: message
-            break: False
+          key: MANUAL_RULES
+          store: config
+          search: message
+          break: False
         prompt:
           - role: system
             content: "You are the 'The Rule Lich'. Your job is to make rulings for Table Top Role-Playing Games.  Use the information provided from the books and resources to respond."

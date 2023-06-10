@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Casandalee</title>
+  </head>
+  <body>
+    <div id="main-vertical">
+      <div id="header">
+        <button id="sign-out" hidden="true">Sign Out</button>
+        <h1 id="login-title">Casandalee : Ai for PF2E</h1>
+      </div>
+      <div class="topnav">
+        <a href="/">Casandalee</a>
+        <a class="active" href="about">About</a>
+      </div>
+      <div class="about">
+        <h1>About</h1>
+        <p id="bot-explainer">
+          This is the ttrpg rules lawyer that I named "Casandalee". It's goal is to
+          give you accurate information about TTRPG games. Right now it only has
+          embedded the information for the Pathfinder 2e game. Monsters and
+          NPC's will have to wait for a larger release.
+        </p>
+        <p>
+          Generative Ai is powerful but not always right.  Be sure to check with the books
+          or your games documentation to be 100% sure.
+        </p>
+        
+        <h2>Example Message:</h2>
+        <p id="example-user-message">
+          I rolled a nat 20 on a strike. Does this count as a critical strike?
+        </p>
+        <p id="example-lich-message">
+          Maybe!  Most of the time that is the case however there are times when a nat 20 is not a critical hit.
+        </p>
+
+        <h2>The Developer</h2>
+        <p id="about-me">
+          Hi, I'm Paul... I am a data scientist, MLOps engineer and dungeon
+          master, not a front-end guy. I have been DMing for the last five years
+          and at my peak was running five games a week. Even so I still don't
+          have a full grasp on every rule in the books. To solve my lack of
+          infinite memory, I made this bot.
+        </p>
+
+        <h1> Please donate to help keep the bots running! </h1>
+        <p> Casandalee will always be free for making rulings for your games.  
+            Please help support the cost of the bot in anyway that you can! </p>
+        <div id="donate-button"></div>
+        <script
+            src="https://www.paypalobjects.com/donate/sdk/donate-sdk.js"
+            charset="UTF-8"
+          ></script>
+          <script>
+            PayPal.Donation.Button({
+              env: "production",
+              hosted_button_id: "6H5RLTNW2VGRE",
+              image: {
+                src: "https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif",
+                alt: "Donate with PayPal button",
+                title: "PayPal - The safer, easier way to pay online!",
+              },
+            }).render("#donate-button");
+          </script>
+
+    </div>
+  </body>
+  <link type="text/css" rel="stylesheet" href="static/css/style.css" />
+  <link type="text/css" rel="stylesheet" href="static/css/about.css" />
+  
+</html>

@@ -1,7 +1,8 @@
 
 class LangWizardConfig:
 
-    def __init__(self, ai_construct,
+    def __init__(self, 
+                 ai_construct,
                  database_adapters,
                  endpoints,
                  keyword_spy,

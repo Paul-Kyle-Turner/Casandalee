@@ -55,7 +55,6 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
         self.embedding_function = embedding_function
         self.namespaces = config.PINECONE_NAMESPACES
         self.top_k = config.NUM_QUERY_RESPONSE
-        self.selected_namespace = config.PINECONE_NAMESPACES
 
     def global_index(self):
         """ Use the global index most of the time """
@@ -118,23 +117,9 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
             matches += self.query_pinecone(vector, namespace, top_k)
         return matches
 
-    def get_selected_namespaces(self):
-        """ getter for selected namespace """
-        return self.selected_namespace
-
-    def set_namespace(self, namespaces):
-        """ set the namespace that should be used  note that the namespace must
-            be in the set of namespaces given at init
-        """
-        temp_namespaces = [namespace for namespace in namespaces if namespace in self.namespaces]
-        if temp_namespaces:
-            self.selected_namespace = temp_namespaces
-            return temp_namespaces
-        return self.namespaces
-
     def query(self, message):
         message_vector = self.get_message_embeddings(message)
-        namespaces = self.selected_namespace
+        namespaces = self.namespaces
         return self.query_many(message_vector, namespaces, self.top_k)
 
     def pull_key_from_responses(self, responses, key):

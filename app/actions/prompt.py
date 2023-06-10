@@ -56,6 +56,8 @@ class PromptAction(Action):
         keyword_spy = langwizard_config.keyword_spy
         keyword_search_text = keyword_spy.surround_with_surrounding_special(
             keyword)
+        print(keyword)
+        print(replacement_list)
         for chat in prompt:
             content = chat['content']
             if re.search(keyword_search_text, chat['content']):

@@ -92,6 +92,15 @@
   margin-right: 0.5%;
 }
 
+.chatbot-textarea-input {
+  flex: 1 1 auto;
+  font-size: 16px;
+  padding: 5px 10px;
+  background-color: #3a3434;
+  color: #ccc;
+  margin-right: 0.5%;
+}
+
 .chatbot-submit-btn {
   height: 40px;
   font-size: 16px;

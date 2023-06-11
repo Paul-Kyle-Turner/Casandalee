@@ -25,14 +25,14 @@ def backgrounds():
     return render_template('backgrounds.html')
 
 
-@app.route('/rules', methods=['POST'])
-def rules():
-    return ai_wrap(request, 'rules')
-
-
 @app.route('/backgrounds', methods=['POST'])
 def generate_backgrounds():
     return ai_wrap(request, 'backgrounds')
+
+
+@app.route('/rules', methods=['POST'])
+def rules():
+    return ai_wrap(request, 'rules')
 
 
 if __name__ == '__main__':

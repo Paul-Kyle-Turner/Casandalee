@@ -12,15 +12,15 @@ from config import GameConfigurations, PineconeConfig
 
 def ai_wrap(request, endpoint_name):
     """ Endpoints for ai streams generated with a single line. """
-    token = request.cookies.get('token')
-    claims = is_logged_in(token)
-    if claims is None:
-        def login_generator():
-            yield "Please login.  I have to keep track of my followers."
-        return Response(login_generator(),
-                        mimetype='text/event-stream',
-                        headers={'X-Accel-Buffering': 'no',
-                                 'Access-Control-Allow-Origin': '*'})
+    # token = request.cookies.get('token')
+    # claims = is_logged_in(token)
+    # if claims is None:
+    #     def login_generator():
+    #         yield "Please login.  I have to keep track of my followers."
+    #     return Response(login_generator(),
+    #                     mimetype='text/event-stream',
+    #                     headers={'X-Accel-Buffering': 'no',
+    #                              'Access-Control-Allow-Origin': '*'})
 
     ai_construct = AIConstruct({})
     config_adapter = ConfigAdapter(GameConfigurations.Pathfinder2e)

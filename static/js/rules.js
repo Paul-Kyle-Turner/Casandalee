@@ -51,7 +51,7 @@ const clearRuleResponse = () => {
 const fetchRules = async (message) => {
   try {
     loading = true;
-    const response = await fetch("/rules", {
+    const response = await fetch("/chat/rules", {
       method: "POST",
       body: JSON.stringify({
         message: message,

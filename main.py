@@ -25,12 +25,12 @@ def backgrounds():
     return render_template('backgrounds.html')
 
 
-@app.route('/backgrounds', methods=['POST'])
+@app.route('/chat/backgrounds', methods=['POST'])
 def generate_backgrounds():
     return ai_wrap(request, 'backgrounds')
 
 
-@app.route('/rules', methods=['POST'])
+@app.route('/chat/rules', methods=['POST'])
 def rules():
     return ai_wrap(request, 'rules')
 

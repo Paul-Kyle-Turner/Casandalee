@@ -13,4 +13,4 @@ app.yaml
 .vscode/
 req.txt
 wallet/
-.ipynb
+*.ipynb

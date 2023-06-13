@@ -16,7 +16,7 @@ keywords:
       store: config
       key: NAME
 endpoints:
-  lich:
+  rules:
     - categorical_interrogation:
         id: categorical_interrogation
         store: config
@@ -24,6 +24,7 @@ endpoints:
         edit_options:
           store: pinecone
           attr: namespaces
+          default: pathfinder2e-All
         convert:
           key: NAMESPACES
           store: config
@@ -50,11 +51,11 @@ endpoints:
             content: "Only use the information that is relevant for your answer."
           - role: user
             content: "{message}"
-  bard:
+  backgrounds:
     - prompt:
         prompt:
           - role: system
-            content: "You are 'The Background Bard'.  You help Player's to generate character background based on some content made by their game master."
+            content: "You help Player's to generate character background based on some content made by their game master."
           - role: system
             content: "The background scene and setting created by the game master is : {gm_message}"
           - role: system

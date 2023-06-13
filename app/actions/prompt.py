@@ -91,8 +91,11 @@ class PromptAction(Action):
                                                              keyword,
                                                              keyword_replacements[keyword],
                                                              langwizard_config)
-            except KeyError as keyword_replacement_error:
-                pass
+            except KeyError:
+                # we loop through all of the keywords
+                # the keywords may not exist yet, but that is fine.
+                # just return the prompt and don't care about the missing keywords
+                continue
         return copied_prompt
 
 
@@ -160,6 +163,19 @@ class CategoricalInterrogationAction(PromptAction):
         langwizard_config.outputs[self.action_id] = output
         return output
 
+    @staticmethod
+    def set_attr_safe(database_adapter, edit_atter, output, default):
+        if output is None:
+            setattr(database_adapter, edit_atter, default)
+            return default
+        attr = getattr(database_adapter, edit_atter)
+        if not isinstance(output, type(attr)):
+            setattr(database_adapter, edit_atter, default)
+            return default
+        if output:
+            setattr(database_adapter, edit_atter, output)
+            return output
+
     def complete_action(self, langwizard_config):
         keyword_spy = langwizard_config.keyword_spy
         database_adapters = langwizard_config.database_adapters
@@ -207,8 +223,9 @@ class CategoricalInterrogationAction(PromptAction):
         if edit_options:
             edit_store = self.action_options['edit_options']['store']
             edit_attr = self.action_options['edit_options']['attr']
+            default = self.action_options['edit_options']['default']
             database_adapter = database_adapters[edit_store]
-            setattr(database_adapter, edit_attr, output)
+            self.set_attr_safe(database_adapter, edit_attr, output, default)
 
     @staticmethod
     def clean_output(output: str) -> str:

@@ -24,6 +24,7 @@ endpoints:
         edit_options:
           store: pinecone
           attr: namespaces
+          default: pathfinder2e-All
         convert:
           key: NAMESPACES
           store: config

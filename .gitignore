@@ -12,5 +12,5 @@ package-lock.json
 app.yaml
 .vscode/
 req.txt
-*.ipynb
 wallet/
+.ipynb

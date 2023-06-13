@@ -12,7 +12,7 @@ document
       event.preventDefault();
       const inputElement = document.querySelector(".chatbot-input");
       const inputMessage = inputElement.value.trim();
-      lichResponse(inputMessage);
+      chatbotResponse(inputMessage);
     }
   });
 
@@ -21,7 +21,7 @@ document
   .addEventListener("click", (event) => {
     event.preventDefault();
     const input = document.querySelector(".chatbot-input").value.trim();
-    lichResponse(input);
+    chatbotResponse(input);
   });
 
 const mutateFlavor = (flavor) => {
@@ -33,24 +33,25 @@ const mutateLastMessage = (message) => {
   const lastMessageElement = document.querySelector(".chatbot-last-message");
   lastMessageElement.style.visibility = "visible";
   lastMessageElement.textContent = message;
+  document.querySelector(".chatbot-input").value = message;
 };
 
-const concatLichResponse = (lichText) => {
-  const lichElement = document.querySelector(".chatbot-response");
-  lichElement.style.visibility = "visible";
-  lichElement.textContent = lichElement.textContent + lichText;
+const concatChatbotResponse = (lichText) => {
+  const chatbotElement = document.querySelector(".chatbot-response");
+  chatbotElement.style.visibility = "visible";
+  chatbotElement.textContent = chatbotElement.textContent + lichText;
 };
 
-const clearLichResponse = () => {
-  const lichElement = document.querySelector(".chatbot-response");
-  lichElement.style.visibility = "hidden";
-  lichElement.textContent = "";
+const clearRuleResponse = () => {
+  const chatbotElement = document.querySelector(".chatbot-response");
+  chatbotElement.style.visibility = "hidden";
+  chatbotElement.textContent = "";
 };
 
-const fetchLich = async (message) => {
+const fetchRules = async (message) => {
   try {
     loading = true;
-    const response = await fetch("/lich", {
+    const response = await fetch("/chat/rules", {
       method: "POST",
       body: JSON.stringify({
         message: message,
@@ -66,7 +67,7 @@ const fetchLich = async (message) => {
     while (true) {
       const { value, done } = await reader.read();
       if (done) break;
-      concatLichResponse(value);
+      concatChatbotResponse(value);
     }
     mutateFlavor(
       "This is my best answer right now.  Don't worry I am learning..."
@@ -78,17 +79,17 @@ const fetchLich = async (message) => {
   }
 };
 
-const lichResponse = (message) => {
+const chatbotResponse = (message) => {
   if (message === "") {
     mutateFlavor("I can't say anything if you don't.");
   } else {
     if (loading) {
       mutateFlavor("Slow down... I can only answer one question at a time.");
     } else {
-      clearLichResponse();
+      clearRuleResponse();
       mutateFlavor("Let me think about that...");
       mutateLastMessage(message);
-      fetchLich(message);
+      fetchRules(message);
     }
   }
 };

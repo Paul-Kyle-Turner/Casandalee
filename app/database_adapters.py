@@ -72,7 +72,7 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
             "metadata": {
                 "message": message,
                 "message_id": self.create_id(message),
-                "message_uuid": uuid4()
+                "message_uuid": str(uuid4())
             }
         }]
         pinecone_index.upsert(vectors=message_dict, namespace=namespace)

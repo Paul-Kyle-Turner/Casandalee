@@ -10,12 +10,16 @@ from google.cloud import storage
 from app.login import is_logged_in
 
 from app.ai_wrap import ai_wrap
-from app.database_adapters import PineconeDatabaseAdapter
-from app.storage_adapters import GoogleBucketStorage
-from app.openai_utils import get_openai_embeddings
 
-from config import PineconeConfig
+from app.ai_construct import AIConstruct
+from app.database_adapters import PineconeDatabaseAdapter, JsonAdapter, ConfigAdapter
+from app.lang_wizard import LangWizard
+from app.openai_utils import get_openai_embeddings
+from app.storage_adapters import GoogleBucketStorage
+
 from config import AppConfig
+from config import PineconeConfig
+from config import GameConfigurations
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
@@ -34,6 +38,11 @@ def about():
 @app.route('/backgrounds')
 def backgrounds():
     return render_template('backgrounds.html')
+
+
+@app.route('/content/content')
+def content():
+    pass
 
 
 @app.route('/chat/backgrounds', methods=['POST'])
@@ -91,17 +100,30 @@ def report_chat():
 
 @app.route('/chat/rules', methods=['POST'])
 def rules():
-    token = request.cookies.get('token')
-    claims = is_logged_in(token)
-    if claims is None:
-        def login_generator():
-            yield "Please login.  I have to keep track of my followers."
-        return Response(login_generator(),
-                        mimetype='text/event-stream',
-                        headers={'X-Accel-Buffering': 'no',
-                                 'Access-Control-Allow-Origin': '*'})
+    # token = request.cookies.get('token')
+    # claims = is_logged_in(token)
+    # if claims is None:
+    #     def login_generator():
+    #         yield "Please login.  I have to keep track of my followers."
+    #     return Response(login_generator(),
+    #                     mimetype='text/event-stream',
+    #                     headers={'X-Accel-Buffering': 'no',
+    #                              'Access-Control-Allow-Origin': '*'})
 
-    output = ai_wrap(request, 'rules')
+    ai_construct = AIConstruct({})
+    config_adapter = ConfigAdapter(GameConfigurations.Pathfinder2e)
+    json_adapter = JsonAdapter(request.get_json())
+    pinecone_adapter = PineconeDatabaseAdapter(PineconeConfig,
+                                               get_openai_embeddings,
+                                               global_index=False)
+    lang_wizard = LangWizard(ai_construct, {'pinecone': pinecone_adapter,
+                                            'config': config_adapter,
+                                            'json_input': json_adapter})
+
+    output = lang_wizard.endpoint_response('rules')
+
+    print(lang_wizard.langwizard_config.outputs)
+    print(lang_wizard.langwizard_config.keyword_replacements)
 
     def response_generator(output: Dict):
         for chunk in output['prompt']:
@@ -111,7 +133,6 @@ def rules():
                     mimetype='text/event-stream',
                     headers={'X-Accel-Buffering': 'no',
                              'Access-Control-Allow-Origin': '*'})
-
 
 
 if __name__ == '__main__':

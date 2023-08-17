@@ -28,6 +28,7 @@ class PromptAction(Action):
             prompt, keyword_replacements, langwizard_config)
         output = langwizard_config.ai_construct.chat(prompt, override=False)
         langwizard_config.outputs[self.action_id] = output
+        langwizard_config.keyword_replacements[self.action_id] = keyword_replacements
 
     def rollback_list(self,
                       replacement_list,

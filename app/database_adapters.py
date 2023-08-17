@@ -170,7 +170,7 @@ class JsonAdapter(DatabaseAdapter):
 
 
 class ConfigAdapter(DatabaseAdapter):
-    
+
     def __init__(self, config:Dict):
         self.config = config
 

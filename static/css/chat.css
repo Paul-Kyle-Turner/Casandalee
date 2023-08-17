@@ -110,3 +110,13 @@
   cursor: pointer;
   padding-left: 1%;
 }
+
+.thumbs-up {
+  position: absolute;
+  right: 50px;
+}
+
+.thumbs-down {
+  position: absolute;
+  right: 30px;
+}

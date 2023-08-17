@@ -67,13 +67,13 @@ class GameConfigurations:
 class PineconeConfig:
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
     PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "asia-southeast1-gcp")
-    PINECONE_NAME = os.getenv("PINECONE_NAME", "futurebot")
+    PINECONE_NAME = os.getenv("PINECONE_NAME", "casandalee-index")
     PINECONE_NAMESPACES = ["pathfinder2e-All"]
     EMBEDDING_PACKAGE = os.getenv("EMBEDDING_PACKAGE", "openai")
     EMBEDDING_ENGINE = os.getenv("EMBEDDING_ENGINE", "text-embedding-ada-002")
     EMBEDDING_DIMENSION = int(os.getenv("EMBEDDING_DIMENSION", "1536"))
     NUM_QUERY_RESPONSE = int(os.getenv("NUM_QUERY_RESPONSE", "2"))
-    PINECONE_UPSERT_NAMESPACE = os.getenv("PINECONE_UPSERT_NAMESPACE", "talmud")
+    PINECONE_UPSERT_NAMESPACE = os.getenv("PINECONE_UPSERT_NAMESPACE", "None")
 
 
 class OpenAIConfig:
@@ -105,6 +105,9 @@ class AppConfig:
 
     # Password
     HASH=os.getenv("HASH", "failed-to-find")
+
+    # judge bcuket
+    JUDGE_BUCKET=os.getenv("JUDGE_BUCKET", "judge")
 
     # Test namespace variables
     TEST_NAMESPACE=os.getenv("TEST_NAMESPACE", "test")

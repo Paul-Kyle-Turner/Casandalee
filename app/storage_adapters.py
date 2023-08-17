@@ -1,6 +1,6 @@
 """ Storage adapters for the langwizard """
 from app.bucket import store_blob, fetch_blob
-
+import json
 
 class StorageAdapter:
     """ used by the langwizard to store payloads in databases """
@@ -21,6 +21,8 @@ class GoogleBucketStorage(StorageAdapter):
         self.bucket_name = bucket_name
 
     def store(self, payload_json, keys):
+        if isinstance(payload_json, dict):
+            payload_json = json.dumps(payload_json)
         store_blob(self.storage_client, self.bucket_name, payload_json, keys)
 
     def fetch(self, key):

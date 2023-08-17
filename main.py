@@ -88,12 +88,7 @@ def report_chat():
     token = request.cookies.get('token')
     claims = is_logged_in(token)
     if claims is None:
-        def login_generator():
-            yield "Please login.  I have to keep track of my followers."
-        return Response(login_generator(),
-                        mimetype='text/event-stream',
-                        headers={'X-Accel-Buffering': 'no',
-                                 'Access-Control-Allow-Origin': '*'})
+        return jsonify({"server-message": "Please login to use this service."})
 
     pinecone_adapter = PineconeDatabaseAdapter(PineconeConfig,
                                                get_openai_embeddings,
@@ -105,14 +100,12 @@ def report_chat():
     json_data = request.get_json()
     message = json_data['message']
     message_hash = pinecone_adapter.create_id(message)
-    message_details = pinecone_adapter.fetch_pinecone_embedding(message_hash)
-    message_id = message_details['metadata']['message_id']
-    response_message = json_data['reponse_message']
+    response_message = json_data['response_message']
     response_hash = pinecone_adapter.create_id(response_message)
     judge = json_data['response_judge']
 
     storage_adapter.store(payload_json={"message": message, "response": response_message, "judge": judge},
-                          keys=[message_id, response_hash, claims.get("email")])
+                          keys=[message_hash, response_hash, claims.get("email")])
 
     if judge == "Good":
         return jsonify({"server-message": "Thank you for your response, we are glad the bot is working well."})

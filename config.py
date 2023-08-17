@@ -107,7 +107,7 @@ class AppConfig:
     HASH=os.getenv("HASH", "failed-to-find")
 
     # judge bcuket
-    JUDGE_BUCKET=os.getenv("JUDGE_BUCKET", "judge")
+    JUDGE_BUCKET=os.getenv("JUDGE_BUCKET", "judge-chatbot")
 
     # Test namespace variables
     TEST_NAMESPACE=os.getenv("TEST_NAMESPACE", "test")

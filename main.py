@@ -60,29 +60,6 @@ def generate_backgrounds():
                              'Access-Control-Allow-Origin': '*'})
 
 
-@app.route('/chat/rules', methods=['POST'])
-def rules():
-    token = request.cookies.get('token')
-    claims = is_logged_in(token)
-    if claims is None:
-        def login_generator():
-            yield "Please login.  I have to keep track of my followers."
-        return Response(login_generator(),
-                        mimetype='text/event-stream',
-                        headers={'X-Accel-Buffering': 'no',
-                                 'Access-Control-Allow-Origin': '*'})
-
-    output = ai_wrap(request, 'rules')
-
-    def response_generator(output: Dict):
-        for chunk in output['prompt']:
-            yield chunk
-
-    return Response(response_generator(output),
-                    mimetype='text/event-stream',
-                    headers={'X-Accel-Buffering': 'no',
-                             'Access-Control-Allow-Origin': '*'})
-
 @app.route('/report/chat', methods=['POST'])
 def report_chat():
     token = request.cookies.get('token')
@@ -110,6 +87,31 @@ def report_chat():
     if judge == "Good":
         return jsonify({"server-message": "Thank you for your response, we are glad the bot is working well."})
     return jsonify({"server-message": "Thank you for your response, we will update the bot with your recommendations."})
+
+
+@app.route('/chat/rules', methods=['POST'])
+def rules():
+    token = request.cookies.get('token')
+    claims = is_logged_in(token)
+    if claims is None:
+        def login_generator():
+            yield "Please login.  I have to keep track of my followers."
+        return Response(login_generator(),
+                        mimetype='text/event-stream',
+                        headers={'X-Accel-Buffering': 'no',
+                                 'Access-Control-Allow-Origin': '*'})
+
+    output = ai_wrap(request, 'rules')
+
+    def response_generator(output: Dict):
+        for chunk in output['prompt']:
+            yield chunk
+
+    return Response(response_generator(output),
+                    mimetype='text/event-stream',
+                    headers={'X-Accel-Buffering': 'no',
+                             'Access-Control-Allow-Origin': '*'})
+
 
 
 if __name__ == '__main__':

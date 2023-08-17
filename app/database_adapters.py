@@ -4,6 +4,7 @@ import time
 import pinecone
 from pinecone.exceptions import PineconeProtocolError
 from typing import Dict
+from uuid import uuid4
 
 from app.sha_hash import hash_message_sha_256
 
@@ -69,7 +70,9 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
             "id": self.create_id(message),
             "values": vector,
             "metadata": {
-                "message": message
+                "message": message,
+                "message_id": self.create_id(message),
+                "message_uuid": uuid4()
             }
         }]
         pinecone_index.upsert(vectors=message_dict, namespace=namespace)
@@ -164,12 +167,12 @@ class JsonAdapter(DatabaseAdapter):
     def pull_id_from_reponses(self, responses):
         """ Given a set of reponses get an id """
         return "json_input"
-        
+
+
 class ConfigAdapter(DatabaseAdapter):
     
     def __init__(self, config:Dict):
         self.config = config
-        
 
     def query(self, message):
         return getattr(self.config, message)

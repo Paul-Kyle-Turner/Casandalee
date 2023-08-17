@@ -4,15 +4,16 @@
 // chatbot-content-response
 
 let loading = false;
+let judgeMessageSent = false;
 
 document
   .querySelector(".chatbot-input")
   .addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      const inputElement = document.querySelector(".chatbot-input");
-      const inputMessage = inputElement.value.trim();
+      const inputMessage = document.querySelector(".chatbot-input").value.trim();;
       chatbotResponse(inputMessage);
+      chatbotJudgeInit();
     }
   });
 
@@ -22,7 +23,10 @@ document
     event.preventDefault();
     const input = document.querySelector(".chatbot-input").value.trim();
     chatbotResponse(input);
+    chatbotJudgeInit();
   });
+
+
 
 const mutateFlavor = (flavor) => {
   const flavorElement = document.querySelector(".chatbot-flavor");
@@ -50,6 +54,7 @@ const clearRuleResponse = () => {
 
 const fetchRules = async (message) => {
   try {
+    chatbotJudgeInit();
     loading = true;
     const response = await fetch("/chat/rules", {
       method: "POST",
@@ -69,14 +74,77 @@ const fetchRules = async (message) => {
       if (done) break;
       concatChatbotResponse(value);
     }
+    chatbotJudgeInit();
     mutateFlavor(
       "This is my best answer right now.  Don't worry I am learning..."
     );
     loading = false;
+    judgeMessageSent = false;
   } catch (error) {
     loading = false;
     mutateFlavor("There has been an error in my process.");
   }
+};
+
+const fetchJudge = async (message, response_message, response_judge) => {
+  try {
+    loading = true;
+    if (judgeMessageSent) { 
+      mutateFlavor("Try another message before you judge me too harshly.")
+    } else {
+      const response = await fetch("/report/chat", {
+        method: "POST",
+        body: JSON.stringify({
+          message: message,
+          response_message: response_message,
+          response_judge: response_judge
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        }
+      });
+      const data = await response.json();
+      mutateFlavor(data['server-message'])
+      judgeMessageSent = true;
+      loading = false;
+    }
+  } catch (error) {
+    loading = false;
+  }
+}
+
+const chatbotJudgeInit = () => {
+  const chatbotElement = document.querySelector(".chatbot-response");
+
+  const thumbsUp = document.createElement("button");
+  thumbsUp.className = "thumbs-up";
+  const faThumbsUp = document.createElement("i");
+  faThumbsUp.className = "fa fa-thumbs-up";
+  thumbsUp.appendChild(faThumbsUp);
+  chatbotElement.appendChild(thumbsUp);
+
+  const thumbsDown = document.createElement("button");
+  thumbsDown.className = "thumbs-down";
+  const faThumbsDown = document.createElement("i");
+  faThumbsDown.className = "fa fa-thumbs-down";
+  thumbsDown.appendChild(faThumbsDown);
+  chatbotElement.appendChild(thumbsDown);
+
+  thumbsUp.addEventListener("click", (event) => {
+    event.preventDefault();
+    const lastMessage = document.querySelector(".chatbot-last-message").textContent.trim();
+    const lastResponse = document.querySelector(".chatbot-response").textContent.trim();
+    const judge = "Good"
+    fetchJudge(lastMessage, lastResponse, judge)
+  });
+
+  thumbsDown.addEventListener("click", (event) => {
+    event.preventDefault();
+    const lastMessage = document.querySelector(".chatbot-last-message").textContent.trim();
+    const lastResponse = document.querySelector(".chatbot-response").textContent.trim();
+    const judge = "Bad"
+    fetchJudge(lastMessage, lastResponse, judge)
+  });
 };
 
 const chatbotResponse = (message) => {

@@ -16,7 +16,6 @@ document
         .querySelector(".chatbot-input")
         .value.trim();
       chatbotResponse(inputMessage);
-      chatbotJudgeInit();
     }
   });
 
@@ -26,7 +25,6 @@ document
     event.preventDefault();
     const input = document.querySelector(".chatbot-input").value.trim();
     chatbotResponse(input);
-    chatbotJudgeInit();
   });
 
 const mutateFlavor = (flavor) => {
@@ -56,7 +54,8 @@ const clearRuleResponse = () => {
 const showChatbotContent = (content) => {
   const chatbotElement = document.querySelector(".chatbot-content-response");
   chatbotElement.style.visibility = "visible";
-  chatbotElement.textContent = "Casandalee used this information to determine the answer : "
+  chatbotElement.textContent =
+    "Casandalee used this information to determine the answer : ";
   for (const key in content) {
     contentElement = document.createElement("a");
     contentElement.textContent = key;
@@ -64,6 +63,12 @@ const showChatbotContent = (content) => {
     contentElement.className = "content-link";
     chatbotElement.appendChild(contentElement);
   }
+};
+
+const clearChatbotContent = () => {
+  const chatbotElement = document.querySelector(".chatbot-content-response");
+  chatbotElement.style.visibility = "hidden";
+  chatbotElement.textContent = "";
 };
 
 const fetchContent = async (message) => {
@@ -110,6 +115,7 @@ const fetchRules = async (message) => {
     mutateFlavor(
       "This is my best answer right now.  Don't worry I am learning..."
     );
+    chatbotJudgeInit();
     fetchContent(message);
     loading = false;
     judgeMessageSent = false;
@@ -196,6 +202,7 @@ const chatbotResponse = (message) => {
       mutateFlavor("Slow down... I can only answer one question at a time.");
     } else {
       clearRuleResponse();
+      clearChatbotContent();
       mutateFlavor("Let me think about that...");
       mutateLastMessage(message);
       fetchRules(message);

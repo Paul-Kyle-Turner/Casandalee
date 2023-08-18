@@ -73,7 +73,10 @@ def content():
     content_urls = {}
     for content_item in content_complete:
         for content_key in content_item.keys():
-            content_urls[content_item[content_key]['metadata']['title']] = content_item[content_key]['metadata']['url']
+            content_url = content_item[content_key]['metadata']['url']
+            if content_url[0:5] != "https":
+                content_url = "https://2e.aonprd.com/" + content_url
+            content_urls[content_item[content_key]['metadata']['title']] = content_url
 
     return jsonify(content_urls)
 

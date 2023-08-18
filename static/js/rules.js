@@ -4,6 +4,7 @@
 // chatbot-content-response
 
 let loading = false;
+let contentLoading = false;
 let judgeMessageSent = false;
 
 document
@@ -11,7 +12,9 @@ document
   .addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      const inputMessage = document.querySelector(".chatbot-input").value.trim();;
+      const inputMessage = document
+        .querySelector(".chatbot-input")
+        .value.trim();
       chatbotResponse(inputMessage);
       chatbotJudgeInit();
     }
@@ -25,8 +28,6 @@ document
     chatbotResponse(input);
     chatbotJudgeInit();
   });
-
-
 
 const mutateFlavor = (flavor) => {
   const flavorElement = document.querySelector(".chatbot-flavor");
@@ -52,9 +53,32 @@ const clearRuleResponse = () => {
   chatbotElement.textContent = "";
 };
 
+const fetchContent = async (message) => {
+  try {
+    contentLoading = true;
+
+    const response = await fetch("/content/content", {
+      method: "POST",
+      body: JSON.stringify({
+        message: message,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const data = await response.json();
+    console.log(data);
+    mutateFlavor("we got to content");
+
+    contentLoading = false;
+  } catch (error) {
+    contentLoading = false;
+  }
+};
+
 const fetchRules = async (message) => {
   try {
-    chatbotJudgeInit();
     loading = true;
     const response = await fetch("/chat/rules", {
       method: "POST",
@@ -74,7 +98,6 @@ const fetchRules = async (message) => {
       if (done) break;
       concatChatbotResponse(value);
     }
-    chatbotJudgeInit();
     mutateFlavor(
       "This is my best answer right now.  Don't worry I am learning..."
     );
@@ -89,29 +112,29 @@ const fetchRules = async (message) => {
 const fetchJudge = async (message, response_message, response_judge) => {
   try {
     loading = true;
-    if (judgeMessageSent) { 
-      mutateFlavor("Try another message before you judge me too harshly.")
+    if (judgeMessageSent) {
+      mutateFlavor("Try another message before you judge me too harshly.");
     } else {
       const response = await fetch("/report/chat", {
         method: "POST",
         body: JSON.stringify({
           message: message,
           response_message: response_message,
-          response_judge: response_judge
+          response_judge: response_judge,
         }),
         headers: {
           "Content-Type": "application/json",
-        }
+        },
       });
       const data = await response.json();
-      mutateFlavor(data['server-message'])
+      mutateFlavor(data["server-message"]);
       judgeMessageSent = true;
       loading = false;
     }
   } catch (error) {
     loading = false;
   }
-}
+};
 
 const chatbotJudgeInit = () => {
   const chatbotElement = document.querySelector(".chatbot-response");
@@ -132,18 +155,26 @@ const chatbotJudgeInit = () => {
 
   thumbsUp.addEventListener("click", (event) => {
     event.preventDefault();
-    const lastMessage = document.querySelector(".chatbot-last-message").textContent.trim();
-    const lastResponse = document.querySelector(".chatbot-response").textContent.trim();
-    const judge = "Good"
-    fetchJudge(lastMessage, lastResponse, judge)
+    const lastMessage = document
+      .querySelector(".chatbot-last-message")
+      .textContent.trim();
+    const lastResponse = document
+      .querySelector(".chatbot-response")
+      .textContent.trim();
+    const judge = "Good";
+    fetchJudge(lastMessage, lastResponse, judge);
   });
 
   thumbsDown.addEventListener("click", (event) => {
     event.preventDefault();
-    const lastMessage = document.querySelector(".chatbot-last-message").textContent.trim();
-    const lastResponse = document.querySelector(".chatbot-response").textContent.trim();
-    const judge = "Bad"
-    fetchJudge(lastMessage, lastResponse, judge)
+    const lastMessage = document
+      .querySelector(".chatbot-last-message")
+      .textContent.trim();
+    const lastResponse = document
+      .querySelector(".chatbot-response")
+      .textContent.trim();
+    const judge = "Bad";
+    fetchJudge(lastMessage, lastResponse, judge);
   });
 };
 
@@ -151,13 +182,14 @@ const chatbotResponse = (message) => {
   if (message === "") {
     mutateFlavor("I can't say anything if you don't.");
   } else {
-    if (loading) {
+    if (loading || contentLoading) {
       mutateFlavor("Slow down... I can only answer one question at a time.");
     } else {
       clearRuleResponse();
       mutateFlavor("Let me think about that...");
       mutateLastMessage(message);
       fetchRules(message);
+      fetchContent(message);
     }
   }
 };

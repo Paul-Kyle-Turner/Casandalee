@@ -2,6 +2,7 @@
 Main application of dnd ai.
 Author : Paul Turner
 """
+import ast
 from typing import Dict
 from flask import Flask, render_template, request, Response, jsonify
 
@@ -40,9 +41,41 @@ def backgrounds():
     return render_template('backgrounds.html')
 
 
-@app.route('/content/content')
+@app.route('/content/content', methods=['POST'])
 def content():
-    pass
+    token = request.cookies.get('token')
+    claims = is_logged_in(token)
+    if claims is None:
+        def login_generator():
+            yield "Please login.  I have to keep track of my followers."
+        return Response(login_generator(),
+                        mimetype='text/event-stream',
+                        headers={'X-Accel-Buffering': 'no',
+                                 'Access-Control-Allow-Origin': '*'})
+    
+    json_adapter = JsonAdapter(request.get_json())
+    pinecone_adapter = PineconeDatabaseAdapter(PineconeConfig,
+                                               get_openai_embeddings)
+
+    storage_client = storage.Client()
+    bucket_storage_adapter = GoogleBucketStorage(storage_client, AppConfig.CONTENT_BUCKET)
+
+    content_response = bucket_storage_adapter.fetch([claims.get('email'),
+                                            pinecone_adapter.create_id(json_adapter.query('message')[0])])
+
+    content_response = ast.literal_eval(content_response)
+    content_complete = []
+    for content_key in content_response["prompt"]["content"].keys():
+        content_result = pinecone_adapter.fetch_pinecone_embedding(content_response["prompt"]["content"][content_key],
+                                                                   namespace=content_key)
+        content_complete.append(content_result)
+
+    content_urls = {}
+    for content_item in content_complete:
+        for content_key in content_item.keys():
+            content_urls[content_item[content_key]['metadata']['title']] = content_item[content_key]['metadata']['url']
+
+    return jsonify(content_urls)
 
 
 @app.route('/chat/backgrounds', methods=['POST'])
@@ -100,15 +133,15 @@ def report_chat():
 
 @app.route('/chat/rules', methods=['POST'])
 def rules():
-    # token = request.cookies.get('token')
-    # claims = is_logged_in(token)
-    # if claims is None:
-    #     def login_generator():
-    #         yield "Please login.  I have to keep track of my followers."
-    #     return Response(login_generator(),
-    #                     mimetype='text/event-stream',
-    #                     headers={'X-Accel-Buffering': 'no',
-    #                              'Access-Control-Allow-Origin': '*'})
+    token = request.cookies.get('token')
+    claims = is_logged_in(token)
+    if claims is None:
+        def login_generator():
+            yield "Please login.  I have to keep track of my followers."
+        return Response(login_generator(),
+                        mimetype='text/event-stream',
+                        headers={'X-Accel-Buffering': 'no',
+                                 'Access-Control-Allow-Origin': '*'})
 
     ai_construct = AIConstruct({})
     config_adapter = ConfigAdapter(GameConfigurations.Pathfinder2e)
@@ -122,12 +155,16 @@ def rules():
 
     output = lang_wizard.endpoint_response('rules')
 
-    print(lang_wizard.langwizard_config.outputs)
-    print(lang_wizard.langwizard_config.keyword_replacements)
+    storage_client = storage.Client()
+    bucket_storage_adapter = GoogleBucketStorage(storage_client, AppConfig.CONTENT_BUCKET)
+
+    content_for_storage = lang_wizard.langwizard_config.content_ids
 
     def response_generator(output: Dict):
         for chunk in output['prompt']:
             yield chunk
+        bucket_storage_adapter.store(payload_json=content_for_storage, keys=[claims.get('email'),
+                                                                             pinecone_adapter.create_id(json_adapter.query('message')[0])])
 
     return Response(response_generator(output),
                     mimetype='text/event-stream',

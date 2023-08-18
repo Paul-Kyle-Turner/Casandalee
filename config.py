@@ -4,7 +4,7 @@ load_dotenv()
 
 class GameConfigurations:
     class Pathfinder2e:
-        NAME = 'Pathfinder 2e'
+        NAME = 'Pathfinder 2e'  #required
         RULES = 'rules'
         FEATS = 'feats'
         WEAPONS = 'weapons'
@@ -24,12 +24,12 @@ class GameConfigurations:
         VEHICLES = 'vehicles'
         SIEGEWEAPONS = 'siegeweapons'
         BACKGROUNDS = 'backgrounds'
-        ALL = 'all'
-        CATEGORIES = [RULES, WEAPONS, FEATS, CLASSES, ARMORS,
+        ALL = 'all'  #required
+        CATEGORIES = [RULES, WEAPONS, FEATS, CLASSES, ARMORS,  #required
                       EQUIPMENT, FEATS, CURSES, DISEASES, HAZARDS,
                       ACTIONS, CONDITIONS, DEITIES, DOMAINS, PLANES,
                       SPELLS, VEHICLES, SIEGEWEAPONS, BACKGROUNDS]
-        MANUAL_RULES = {
+        MANUAL_RULES = {  #required
             FEATS: ['feat', 'feats'],
             RULES: ['how do i', 'what is the', 'rule', 'rules'],
             CLASSES: ['class', 'classes', 'alchemist', 'barbarian',
@@ -39,7 +39,7 @@ class GameConfigurations:
                       'thaumaturge', 'witch', 'wizard', 'gunslinger', 'inventor'],
             SIEGEWEAPONS: ['siege weapons', 'siege weapon'],
         }
-        NAMESPACES = {
+        NAMESPACES = {  #required
             RULES: 'pathfinder2e-Rules',
             FEATS: 'pathfinder2e-Feats',
             WEAPONS: 'pathfinder2e-Weapons',
@@ -61,7 +61,7 @@ class GameConfigurations:
             BACKGROUNDS: 'pathfinder2e-Backgrounds',
             ALL: 'pathfinder2e-All',
         }
-    GAMES = [Pathfinder2e]
+    GAMES = [Pathfinder2e]  #required
 
 
 class PineconeConfig:
@@ -108,6 +108,9 @@ class AppConfig:
 
     # judge bcuket
     JUDGE_BUCKET=os.getenv("JUDGE_BUCKET", "judge-chatbot")
+
+    # content bcuket
+    CONTENT_BUCKET=os.getenv("CONTENT_BUCKET", "content-chatbot")
 
     # Test namespace variables
     TEST_NAMESPACE=os.getenv("TEST_NAMESPACE", "test")

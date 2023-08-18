@@ -79,11 +79,13 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
 
     def fetch_pinecone_embedding(self, message_hash, namespace='messages', max_retry=5):
         """ Fetch a given embedding from pinecone, wrapped in retry if a single instance get's bombarded by traffic."""
+        if isinstance(message_hash, str):
+            message_hash = [message_hash]
         pinecone_index = self.global_index()
         retry = 0
         while True:
             try:
-                return pinecone_index.fetch(ids=[message_hash], namespace=namespace)['vectors']
+                return pinecone_index.fetch(ids=message_hash, namespace=namespace)['vectors']
             except PineconeProtocolError:
                 print("Pinecone is overburdened.")
                 retry += 1
@@ -111,6 +113,8 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
             include_values=False,
             include_metadata=True,
             vector=vector)
+        for response in query_response['matches']:
+            response['metadata']['namespace'] = query_response['namespace']
         return query_response['matches']
 
     def query_many(self, vector, namespaces, top_k=3):
@@ -142,9 +146,13 @@ class PineconeDatabaseAdapter(DatabaseAdapter):
         return found_keys
 
     def pull_id_from_reponses(self, responses):
-        ids = []
+        ids = {}
         for response in responses:
-            ids.append(response['id'])
+            try:
+                if ids[response['metadata']['namespace']]:
+                    ids[response['metadata']['namespace']] += [response['id']]
+            except KeyError:
+                ids[response['metadata']['namespace']] = [response['id']]
         return ids
 
 
@@ -187,5 +195,5 @@ class ConfigAdapter(DatabaseAdapter):
 
     def pull_id_from_reponses(self, responses):
         """ Given a set of reponses get an id """
-        return "config_selection"
+        return self.config.NAME
         

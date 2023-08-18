@@ -22,13 +22,15 @@ class PromptAction(Action):
 
         prompt = self.action_options['prompt']
         found_keywords = keyword_spy.search_for_keywords(prompt)
-        keyword_replacements, _ = keyword_spy.query_keywords(found_keywords,
-                                                             database_adapters)
+        keyword_replacements, content_ids = keyword_spy.query_keywords(found_keywords,
+                                                                       database_adapters)
+
         prompt = self.replace_prompt_text(
             prompt, keyword_replacements, langwizard_config)
         output = langwizard_config.ai_construct.chat(prompt, override=False)
         langwizard_config.outputs[self.action_id] = output
         langwizard_config.keyword_replacements[self.action_id] = keyword_replacements
+        langwizard_config.content_ids[self.action_id] = content_ids
 
     def rollback_list(self,
                       replacement_list,
@@ -199,7 +201,6 @@ class CategoricalInterrogationAction(PromptAction):
         if will_break:
             if convert_option:
                 self.convert(output, langwizard_config, database_adapters)
-
             return
 
         prompt = self.action_options['prompt']
@@ -227,6 +228,8 @@ class CategoricalInterrogationAction(PromptAction):
             default = self.action_options['edit_options']['default']
             database_adapter = database_adapters[edit_store]
             self.set_attr_safe(database_adapter, edit_attr, output, default)
+
+        langwizard_config.outputs[self.action_id] = output
 
     @staticmethod
     def clean_output(output: str) -> str:

@@ -13,4 +13,5 @@ class LangWizardConfig:
         self.keyword_spy = keyword_spy
         self.outputs = {}
         self.keyword_replacements = {}
+        self.content_ids = {}
         self.rollback_token_length = rollback_token_length

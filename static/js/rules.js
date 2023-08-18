@@ -53,10 +53,22 @@ const clearRuleResponse = () => {
   chatbotElement.textContent = "";
 };
 
+const showChatbotContent = (content) => {
+  const chatbotElement = document.querySelector(".chatbot-content-response");
+  chatbotElement.style.visibility = "visible";
+  chatbotElement.textContent = "Casandalee used this information to determine the answer : "
+  for (const key in content) {
+    contentElement = document.createElement("a");
+    contentElement.textContent = key;
+    contentElement.href = content[key];
+    contentElement.className = "content-link";
+    chatbotElement.appendChild(contentElement);
+  }
+};
+
 const fetchContent = async (message) => {
   try {
     contentLoading = true;
-
     const response = await fetch("/content/content", {
       method: "POST",
       body: JSON.stringify({
@@ -66,11 +78,8 @@ const fetchContent = async (message) => {
         "Content-Type": "application/json",
       },
     });
-
     const data = await response.json();
-    console.log(data);
-    mutateFlavor("we got to content");
-
+    showChatbotContent(data);
     contentLoading = false;
   } catch (error) {
     contentLoading = false;
@@ -101,6 +110,7 @@ const fetchRules = async (message) => {
     mutateFlavor(
       "This is my best answer right now.  Don't worry I am learning..."
     );
+    fetchContent(message);
     loading = false;
     judgeMessageSent = false;
   } catch (error) {
@@ -189,7 +199,6 @@ const chatbotResponse = (message) => {
       mutateFlavor("Let me think about that...");
       mutateLastMessage(message);
       fetchRules(message);
-      fetchContent(message);
     }
   }
 };

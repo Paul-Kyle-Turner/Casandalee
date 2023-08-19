@@ -39,6 +39,22 @@
   color: #ffffff;
 }
 
+.chatbot-flavor-gm {
+  display: flex;
+  max-width: 100%;
+  text-align: center;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 5px;
+  background-color: #3a3434;
+  color: #ffffff;
+}
+
+.chatbot-flavor-gm > * {
+  list-style: none;
+  flex: 0 0 33.333333%;
+}
+
 .chatbot-last-message {
   max-width: 100%;
   text-align: center;

@@ -23,17 +23,6 @@
   <body>
     <div id="main-vertical">
       <div id="root">
-        <div id="header">
-          <img class="giggle" src="/static/img/logoo.png"></img>
-          <button id="sign-out" hidden="true">Sign Out</button>
-          <h1 id="login-title">Casandalee : Ai for PF2E</h1>
-        </div>
-        <div class="topnav">
-          <a class="active" href="/">Casandalee: Rules</a>
-          <a href="backgrounds">Backgrounds</a>
-          <a href="about">About</a>
-        </div>
-        <div id="firebaseui-auth-container"></div>
         <div class="chatbot-container">
           <div class="chatbot-messages-container">
             <div class="chatbot-flavor">
@@ -51,6 +40,6 @@
       </div>
     </div>
   </body>
-  <script src="static/js/rules.js"></script>
-  <script src="static/js/login.js"></script>
+  <script type="module" src="static/js/rules.mjs"></script>
+  <script type="module" src="static/js/login.js"></script>
 </html>

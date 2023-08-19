@@ -13,29 +13,28 @@
     />
     <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
     <link type="text/css" rel="stylesheet" href="/static/css/chat.css" />
+    <link rel="icon" type="image/x-icon" href="/static/img/logoo.png">
     <title>Casandalee</title>
   </head>
   <body>
     <div id="main-vertical">
       <div id="root">
-        <div id="header">
-          <button id="sign-out" hidden="true">Sign Out</button>
-          <h1 id="login-title">Casandalee : Ai for PF2E</h1>
-        </div>
-        <div class="topnav">
-          <a href="/">Casandalee: Rules</a>
-          <a class="active" href="backgrounds">Backgrounds</a>
-          <a href="about">About</a>
-        </div>
-        <div id="firebaseui-auth-container"></div>
         <div class="chatbot-container">
           <div class="chatbot-messages-container">
             <div id="main-flavor" class="chatbot-flavor">
               I am Casandalee. Tell me about the town and your character. I will
               spin you a tail about their backstory.
             </div>
-            <div id="gm-flavor" class="chatbot-flavor">
-              Tell me about your scene and setting. (GM should provide this.)
+            <div id="gm-flavor" class="chatbot-flavor-gm">
+              <div id="import"> 
+                <button id="import-button">Import GM scene</button>
+                <input placeholder="Type your message..." />
+              </div>
+              <p>Tell me about your scene and setting. (GM should provide this.)</p>
+              <div id="export">
+                <button id="export-button">Export GM scene</button>
+                <p id="export-hash"></p>
+              </div>
             </div>
             <textarea id="gm-input" class="chatbot-textarea-input"></textarea>
             <div id="user-flavor" class="chatbot-flavor">
@@ -50,6 +49,6 @@
       </div>
     </div>
   </body>
-  <script src="static/js/login.js"></script>
-  <script src="static/js/backgrounds.js"></script>
+  <script type="module" src="static/js/login.js"></script>
+  <script type="module" src="static/js/backgrounds.mjs"></script>
 </html>

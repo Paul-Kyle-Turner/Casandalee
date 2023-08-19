@@ -3,9 +3,15 @@
 // chatbot-response
 // chatbot-content-response
 
+import buildHeader from "./components/root.mjs";
+
 let loading = false;
 let contentLoading = false;
 let judgeMessageSent = false;
+
+window.onload = function () {
+  buildHeader("/");
+};
 
 document
   .querySelector(".chatbot-input")

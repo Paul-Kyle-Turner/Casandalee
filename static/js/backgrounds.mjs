@@ -3,7 +3,13 @@
 // chatbot-response
 // chatbot-content-response
 
+import buildHeader from "./components/root.mjs";
+
 let loading = false;
+
+window.onload = function () {
+  buildHeader("backgrounds");
+};
 
 document
   .querySelector(".chatbot-submit-btn")

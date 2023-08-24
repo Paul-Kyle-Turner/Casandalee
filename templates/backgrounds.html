@@ -11,9 +11,11 @@
       rel="stylesheet"
       href="https://www.gstatic.com/firebasejs/ui/6.0.1/firebase-ui-auth.css"
     />
+    
     <link type="text/css" rel="stylesheet" href="/static/css/style.css" />
     <link type="text/css" rel="stylesheet" href="/static/css/chat.css" />
-    <link rel="icon" type="image/x-icon" href="/static/img/logoo.png">
+    <link type="text/css" rel="stylesheet" href="/static/css/otc.css" />
+    <link rel="icon" type="image/x-icon" href="/static/img/logoo.png" />
     <title>Casandalee</title>
   </head>
   <body>
@@ -26,15 +28,27 @@
               spin you a tail about their backstory.
             </div>
             <div id="gm-flavor" class="chatbot-flavor-gm">
-              <div id="import"> 
-                <button id="import-button">Import GM scene</button>
-                <input placeholder="Type your message..." />
+              <div id="import">
+                <button id="import-button" class="import-button-scene">
+                  Import
+                </button>
+                <div class="spacer"></div>
+                <button id="export-button" class="import-button-scene">Export</button>
+                <form class="otc" name="one-time-code">
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-1" required>
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-2" required>
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-3" required>
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-4" required>
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-5" required>
+                  <input type="number" pattern="[0-9]*" min="0" max="9" maxlength="1"  value="" inputtype="numeric" id="otc-6" required>
+                </form>
+                <button class="copy-button">
+                  <i id="copy" class="fa-solid fa-copy"></i>
+                </button>
               </div>
-              <p>Tell me about your scene and setting. (GM should provide this.)</p>
-              <div id="export">
-                <button id="export-button">Export GM scene</button>
-                <p id="export-hash"></p>
-              </div>
+              <p id="gm-flavor-text" class="gm-flavor-text">
+                Tell me about your scene and setting.
+              </p>
             </div>
             <textarea id="gm-input" class="chatbot-textarea-input"></textarea>
             <div id="user-flavor" class="chatbot-flavor">
@@ -50,5 +64,11 @@
     </div>
   </body>
   <script type="module" src="static/js/backgrounds.mjs"></script>
+  <script type="module" src="static/js/otc.js"></script>
   <script type="module" src="static/js/login.js"></script>
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/js/all.min.js"></script>
 </html>

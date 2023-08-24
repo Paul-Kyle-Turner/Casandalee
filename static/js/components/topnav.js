@@ -1,7 +1,7 @@
 
 const anchorNames = {
     "/": "Casandalee : Rules",
-    "backgrounds": "Backstories",
+    "backstories": "Backstories",
     "about": "About"
 }
 

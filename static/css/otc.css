@@ -1,0 +1,73 @@
+#import {
+  flex-direction: row;
+  display: flex;
+  vertical-align: middle;
+  justify-content: center;
+}
+
+input[type="number"] {
+	width: 1.2em;
+	line-height: .75em;
+	margin: .1em;
+	padding: 0 0 0;
+	font-size: 1em;
+	text-align: center;
+	appearance: textfield;
+	-webkit-appearance: textfield;
+	border: 2px solid #6d6d6d;
+	color: rgb(0, 0, 0);
+	border-radius: 4px;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.otc {
+    padding-left: 1em;
+    padding-right: 1em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+
+.import-button-scene {
+    background-color: #919191;
+    color: rgb(0, 0, 0);
+    font-size: 1em;
+    padding: 4px 4px;
+}
+
+.spacer {
+  width: .5em;
+}
+
+#export {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.export-otc {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  vertical-align: middle;
+  padding-left: 1em;
+}
+
+.copy-button {
+  background-color: Transparent;
+}
+
+#copy {
+  height: 1.5em;
+  width: 1.5em;
+  color: aliceblue;
+}

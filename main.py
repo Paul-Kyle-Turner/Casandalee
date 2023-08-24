@@ -6,6 +6,8 @@ import ast
 from typing import Dict
 from flask import Flask, render_template, request, Response, jsonify
 
+import firebase_admin
+from firebase_admin import firestore
 from google.cloud import storage
 
 from app.login import is_logged_in
@@ -16,6 +18,7 @@ from app.ai_construct import AIConstruct
 from app.database_adapters import PineconeDatabaseAdapter, JsonAdapter, ConfigAdapter
 from app.lang_wizard import LangWizard
 from app.openai_utils import get_openai_embeddings
+from app.scene_id import generate_id
 from app.storage_adapters import GoogleBucketStorage
 
 from config import AppConfig
@@ -24,6 +27,8 @@ from config import GameConfigurations
 
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
+
+firebase_app = firebase_admin.initialize_app()
 
 
 @app.route('/')
@@ -36,7 +41,7 @@ def about():
     return render_template('about.html')
 
 
-@app.route('/backgrounds')
+@app.route('/backstories')
 def backgrounds():
     return render_template('backgrounds.html')
 
@@ -79,6 +84,49 @@ def content():
             content_urls[content_item[content_key]['metadata']['title']] = content_url
 
     return jsonify(content_urls)
+
+
+@app.route('/export/scene', methods=['POST'])
+def export_scene():
+    token = request.cookies.get('token')
+    claims = is_logged_in(token)
+    if claims is None:
+        return jsonify({'gm-scene': 'Please login to use this service.'})
+
+    db = firestore.client()
+    gm_scene = request.get_json()['gm_message']
+    id_collection_doc_ref = db.collection('current-id').document('gm-scene-id')
+    id_collection_doc = id_collection_doc_ref.get()
+    if id_collection_doc.exists:
+        gm_scene_id = int(id_collection_doc.to_dict()['id'])
+    else:
+        return jsonify({'error': 'An error occured when indexing.'})
+    gm_scene_doc = db.collection('gm-scene').document(generate_id(gm_scene_id))
+    gm_scene_doc.set({'gm-scene': gm_scene})
+    id_collection_doc_ref.set({'id': str(gm_scene_id + 1)})
+
+    print('id')
+    print(generate_id(gm_scene_id + 1))
+    return jsonify({'otc': generate_id(gm_scene_id + 1)})
+
+
+@app.route('/import/scene', methods=['POST'])
+def import_scene():
+    token = request.cookies.get('token')
+    claims = is_logged_in(token)
+    if claims is None:
+        return jsonify({'gm-scene': 'Please login to use this service.'})
+
+    db = firestore.client()
+    otc = request.get_json()['otc']
+    gm_scene_doc_ref = db.collection('gm-scene').document(otc)
+    gm_scene_doc = gm_scene_doc_ref.get()
+    gm_scene = ""
+    if gm_scene_doc.exists:
+        gm_scene = gm_scene_doc.to_dict()['gm-scene']
+    else:
+        return jsonify({'gm-scene': 'Error : no GM Scene found.'})
+    return jsonify({'gm-scene': gm_scene})
 
 
 @app.route('/chat/backgrounds', methods=['POST'])

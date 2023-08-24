@@ -48,11 +48,17 @@
   border-radius: 5px;
   background-color: #3a3434;
   color: #ffffff;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .chatbot-flavor-gm > * {
   list-style: none;
-  flex: 0 0 33.333333%;
+  flex: 0 1 33.333333%;
+  align-items: center;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .chatbot-last-message {

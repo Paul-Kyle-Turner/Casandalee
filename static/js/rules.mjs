@@ -63,7 +63,7 @@ const showChatbotContent = (content) => {
   chatbotElement.textContent =
     "Casandalee used this information to determine the answer : ";
   for (const key in content) {
-    contentElement = document.createElement("a");
+    const contentElement = document.createElement("a");
     contentElement.textContent = key;
     contentElement.href = content[key];
     contentElement.className = "content-link";
@@ -90,6 +90,7 @@ const fetchContent = async (message) => {
       },
     });
     const data = await response.json();
+    console.log(data)
     showChatbotContent(data);
     contentLoading = false;
   } catch (error) {

@@ -90,7 +90,6 @@ const fetchContent = async (message) => {
       },
     });
     const data = await response.json();
-    console.log(data)
     showChatbotContent(data);
     contentLoading = false;
   } catch (error) {

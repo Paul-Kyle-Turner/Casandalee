@@ -8,7 +8,7 @@ import buildHeader from "./components/root.mjs";
 let loading = false;
 
 window.onload = function () {
-  buildHeader("backgrounds");
+  buildHeader("backstories");
 };
 
 document

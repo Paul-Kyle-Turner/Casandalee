@@ -15,6 +15,7 @@ from app.login import is_logged_in
 from app.ai_wrap import ai_wrap
 
 from app.ai_construct import AIConstruct
+from app.bucket import create_primary_key
 from app.database_adapters import PineconeDatabaseAdapter, JsonAdapter, ConfigAdapter
 from app.lang_wizard import LangWizard
 from app.openai_utils import get_openai_embeddings
@@ -105,8 +106,6 @@ def export_scene():
     gm_scene_doc.set({'gm-scene': gm_scene})
     id_collection_doc_ref.set({'id': str(gm_scene_id + 1)})
 
-    print('id')
-    print(generate_id(gm_scene_id + 1))
     return jsonify({'otc': generate_id(gm_scene_id + 1)})
 
 
@@ -117,9 +116,9 @@ def import_scene():
     if claims is None:
         return jsonify({'gm-scene': 'Please login to use this service.'})
 
-    db = firestore.client()
+    firebase_client = firestore.client()
     otc = request.get_json()['otc']
-    gm_scene_doc_ref = db.collection('gm-scene').document(otc)
+    gm_scene_doc_ref = firebase_client.collection('gm-scene').document(otc)
     gm_scene_doc = gm_scene_doc_ref.get()
     gm_scene = ""
     if gm_scene_doc.exists:
@@ -164,9 +163,6 @@ def report_chat():
                                                get_openai_embeddings,
                                                global_index=False)
 
-    storage_client = storage.Client()
-    storage_adapter = GoogleBucketStorage(storage_client, AppConfig.JUDGE_BUCKET)
-
     json_data = request.get_json()
     message = json_data['message']
     message_hash = pinecone_adapter.create_id(message)
@@ -174,8 +170,13 @@ def report_chat():
     response_hash = pinecone_adapter.create_id(response_message)
     judge = json_data['response_judge']
 
-    storage_adapter.store(payload_json={"message": message, "response": response_message, "judge": judge},
-                          keys=[message_hash, response_hash, claims.get("email")])
+    key = create_primary_key([message_hash, response_hash, claims.get("email")])
+
+    firebase_client = firestore.client()
+    judge_collection_ref = firebase_client.collection('judge-rules').document(key)
+    judge_collection_ref.set({'judge': judge,
+                               'message': message,
+                               'response_message': response_message})
 
     if judge == "Good":
         return jsonify({"server-message": "Thank you for your response, we are glad the bot is working well."})
